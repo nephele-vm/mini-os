@@ -40,7 +40,9 @@ src-$(CONFIG_BLKFRONT) += blkfront.c
 src-$(CONFIG_TPMFRONT) += tpmfront.c
 src-$(CONFIG_TPM_TIS) += tpm_tis.c
 src-$(CONFIG_TPMBACK) += tpmback.c
+ifeq ($(APP),daytime)
 src-y += daytime.c
+endif
 src-y += events.c
 src-$(CONFIG_FBFRONT) += fbfront.c
 src-$(CONFIG_GRANT) += gntmap.c
@@ -76,6 +78,79 @@ src-$(CONFIG_CONSFRONT) += console/xenbus.c
 # The common mini-os objects to build.
 APP_OBJS :=
 OBJS := $(patsubst %.c,$(OBJ_DIR)/%.o,$(src-y))
+
+# Cloning applications
+ifeq ($(CONFIG_CLONING_APPS),y)
+CFLAGS += -I$(CLONING_APPS_DIR)
+ifeq ($(debug),y)
+CFLAGS += -DCONFIG_DEBUG
+endif
+cloning-apps-src-y += $(CLONING_APPS_DIR)/os/minios/boot.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/os/minios/clone.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/os/minios/cmdline.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/os/minios/main.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/os/minios/mem.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/os/minios/net.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/os/minios/thread.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/os/minios/time.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/common/net.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/common/time.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/common/mem.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/common/profile.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/main.c
+cloning-apps-src-y += $(CLONING_APPS_DIR)/server-common.c
+
+ifeq ($(APP),counter)
+cloning-apps-src-y += $(CLONING_APPS_DIR)/counter.c
+CFLAGS += -DCONFIG_CLONING_APP_COUNTER=1
+endif
+ifeq ($(APP),memory-overhead)
+cloning-apps-src-y += $(CLONING_APPS_DIR)/memory-overhead.c
+CFLAGS += -DCONFIG_CLONING_APP_MEMORY_OVERHEAD=1
+endif
+ifeq ($(APP),children)
+cloning-apps-src-y += $(CLONING_APPS_DIR)/children.c
+CFLAGS += -DCONFIG_CLONING_APP_CHILDREN=1
+endif
+ifeq ($(APP),sleeper)
+cloning-apps-src-y += $(CLONING_APPS_DIR)/sleeper.c
+CFLAGS += -DCONFIG_CLONING_APP_SLEEPER=1
+endif
+ifeq ($(APP),server-tcp)
+cloning-apps-src-y += $(CLONING_APPS_DIR)/server-tcp.c
+CFLAGS += -DCONFIG_CLONING_APP_SERVER_TCP=1
+endif
+ifeq ($(APP),server-udp)
+cloning-apps-src-y += $(CLONING_APPS_DIR)/server-udp.c
+CFLAGS += -DCONFIG_CLONING_APP_SERVER_UDP=1
+endif
+ifeq ($(APP),files)
+cloning-apps-src-y += $(CLONING_APPS_DIR)/files.c
+CFLAGS += -DCONFIG_CLONING_APP_FILES=1
+endif
+ifeq ($(APP),measure-fork)
+cloning-apps-src-y += $(CLONING_APPS_DIR)/measure-fork.c
+CFLAGS += -DCONFIG_CLONING_APP_MEASURE_FORK=1
+endif
+ifeq ($(APP),cloning-apps)
+cloning-apps-src-y += $(CLONING_APPS_DIR)/counter.c
+CFLAGS += -DCONFIG_CLONING_APP_COUNTER=1
+cloning-apps-src-y += $(CLONING_APPS_DIR)/memory-overhead.c
+CFLAGS += -DCONFIG_CLONING_APP_MEMORY_OVERHEAD=1
+cloning-apps-src-y += $(CLONING_APPS_DIR)/children.c
+CFLAGS += -DCONFIG_CLONING_APP_CHILDREN=1
+cloning-apps-src-y += $(CLONING_APPS_DIR)/sleeper.c
+CFLAGS += -DCONFIG_CLONING_APP_SLEEPER=1
+cloning-apps-src-y += $(CLONING_APPS_DIR)/server-tcp.c
+CFLAGS += -DCONFIG_CLONING_APP_SERVER_TCP=1
+cloning-apps-src-y += $(CLONING_APPS_DIR)/server-udp.c
+CFLAGS += -DCONFIG_CLONING_APP_SERVER_UDP=1
+#cloning-apps-src-y += $(CLONING_APPS_DIR)/files.c
+#CFLAGS += -DCONFIG_CLONING_APP_FILES=1
+endif
+endif
+cloning-apps-objs = $(patsubst %.c,%.o,$(cloning-apps-src-y))
+OBJS += $(cloning-apps-objs)
 
 .PHONY: default
 default: $(OBJ_DIR)/$(TARGET)
@@ -152,7 +227,9 @@ LDLIBS += -lc
 endif
 
 ifneq ($(APP_OBJS)-$(lwip),-y)
+ifeq ($(APP),daytime)
 OBJS := $(filter-out $(OBJ_DIR)/daytime.o, $(OBJS))
+endif
 endif
 
 $(OBJ_DIR)/$(TARGET)_app.o: $(APP_OBJS) app.lds $(LIBS)
@@ -191,7 +268,7 @@ clean:	arch_clean
 	rm -f include/list.h
 	rm -f $(OBJ_DIR)/*.o *~ $(OBJ_DIR)/core $(OBJ_DIR)/$(TARGET).elf $(OBJ_DIR)/$(TARGET).raw $(OBJ_DIR)/$(TARGET) $(OBJ_DIR)/$(TARGET).gz
 	find . $(OBJ_DIR) -type l | xargs rm -f
-	$(RM) $(OBJ_DIR)/lwip.a $(LWO)
+	$(RM) $(OBJ_DIR)/lwip.a $(LWO) $(cloning-apps-objs)
 	rm -f tags TAGS
 
 .PHONY: testbuild

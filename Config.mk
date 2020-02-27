@@ -116,6 +116,10 @@ DEF_CPPFLAGS += -isystem $(LWIPDIR)/src/include
 DEF_CPPFLAGS += -isystem $(LWIPDIR)/src/include/ipv4
 endif
 
+ifneq ($(CLONING_APPS_DIR),)
+cloning_apps=y
+endif
+
 # Set tools
 AS         = $(CROSS_COMPILE)as
 LD         = $(CROSS_COMPILE)ld
@@ -198,6 +202,7 @@ CONFIG_BALLOON ?= n
 CONFIG_USE_XEN_CONSOLE ?= n
 CONFIG_GRANT ?= y
 CONFIG_CLONING ?= y
+CONFIG_CLONING_APPS ?= $(cloning_apps)
 
 # Export config items as compiler directives
 DEFINES-$(CONFIG_PARAVIRT) += -DCONFIG_PARAVIRT

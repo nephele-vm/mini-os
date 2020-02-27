@@ -19,5 +19,12 @@
 #define MEMP_NUM_SYS_TIMEOUT 10
 #define TCP_SND_BUF 3000
 #define TCP_MSS 1500
+#define LWIP_SOCKET 1
+#define LWIP_SO_RCVTIMEO 1
+#define CHECKSUM_CHECK_TCP 0
+#define CHECKSUM_CHECK_UDP 0
+#define LWIP_ARP 1
+#define LWIP_IGMP 0
+#define LWIP_DHCP 0
 
 #endif /* __LWIP_LWIPOPTS_H__ */
