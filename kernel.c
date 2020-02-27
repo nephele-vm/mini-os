@@ -97,7 +97,9 @@ void start_kernel(void)
     init_console();
 
     /* Init grant tables */
+#ifdef CONFIG_GRANT
     init_gnttab();
+#endif
     
     /* Init scheduler. */
     init_sched();
@@ -129,7 +131,9 @@ void pre_suspend(void)
 
     local_irq_disable();
 
+#ifdef CONFIG_GRANT
     suspend_gnttab();
+#endif
 
     fini_time();
 
@@ -144,7 +148,9 @@ void post_suspend(int canceled)
 
     init_time();
 
+#ifdef CONFIG_GRANT
     resume_gnttab();
+#endif
 
     local_irq_enable();
 
@@ -163,8 +169,10 @@ void stop_kernel(void)
 
     local_irq_disable();
 
+#ifdef CONFIG_GRANT
     /* Reset grant tables */
     fini_gnttab();
+#endif
 
     /* Reset XenBus */
     fini_xenbus();
