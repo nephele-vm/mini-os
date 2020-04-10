@@ -858,6 +858,22 @@ domid_t xenbus_get_self_id(void)
     return ret;
 }
 
+char *xenbus_pause(xenbus_transaction_t xbt, const char *value)
+{
+	struct write_req req[] = { { value, strlen(value) + 1 }, { "0", 2 } };
+	struct xsd_sockmsg *rep;
+	char *msg;
+
+	rep = xenbus_msg_reply(XS_PAUSE, xbt, req, ARRAY_SIZE(req));
+	msg = errmsg(rep);
+	if (msg)
+		return msg;
+
+	free(rep);
+
+	return NULL;
+}
+
 static void do_ls_test(const char *pre)
 {
     char **dirs, *msg;

@@ -52,6 +52,7 @@ enum xsd_sockmsg_type
     /* XS_RESTRICT has been removed */
     XS_RESET_WATCHES = XS_SET_TARGET + 2,
     XS_DIRECTORY_PART,
+    XS_PAUSE,
 
     XS_TYPE_COUNT,      /* Number of valid types. */
 

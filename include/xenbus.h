@@ -117,6 +117,8 @@ char* xenbus_printf(xenbus_transaction_t xbt,
 /* Utility function to figure out our domain id */
 domid_t xenbus_get_self_id(void);
 
+char *xenbus_pause(xenbus_transaction_t xbt, const char *value);
+
 #ifdef CONFIG_XENBUS
 /* Reset the XenBus system. */
 void fini_xenbus(void);
