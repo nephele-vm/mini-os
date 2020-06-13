@@ -197,6 +197,7 @@ CONFIG_BALLOON ?= n
 # console apart of standard dom0 handled console.
 CONFIG_USE_XEN_CONSOLE ?= n
 CONFIG_GRANT ?= y
+CONFIG_CLONING ?= y
 
 # Export config items as compiler directives
 DEFINES-$(CONFIG_PARAVIRT) += -DCONFIG_PARAVIRT

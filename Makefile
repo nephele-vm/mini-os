@@ -56,6 +56,7 @@ src-y += sched.c
 src-y += shutdown.c
 src-$(CONFIG_TEST) += test.c
 src-$(CONFIG_BALLOON) += balloon.c
+src-$(CONFIG_CLONING) += clone.c
 
 src-y += lib/ctype.c
 src-y += lib/math.c
