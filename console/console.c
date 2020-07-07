@@ -140,6 +140,7 @@ void print(int direct, const char *fmt, va_list args)
     }
 }
 
+#if USE_CONSOLED
 void printk(const char *fmt, ...)
 {
     va_list       args;
@@ -147,6 +148,7 @@ void printk(const char *fmt, ...)
     print(0, fmt, args);
     va_end(args);        
 }
+#endif
 
 void xprintk(const char *fmt, ...)
 {

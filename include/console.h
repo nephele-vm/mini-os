@@ -67,7 +67,12 @@ struct consfront_dev {
 extern uint32_t console_evtchn;
 
 void print(int direct, const char *fmt, va_list args);
+#define USE_CONSOLED 1
+#if USE_CONSOLED
 void printk(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+#else
+#define printk xprintk
+#endif
 void xprintk(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
 
 #define tprintk(_fmt, _args...) printk("[%s] " _fmt, current->name, ##_args) 
