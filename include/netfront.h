@@ -29,4 +29,7 @@ void start_networking(void);
 void stop_networking(void);
 
 void networking_set_addr(struct ip_addr *ipaddr, struct ip_addr *netmask, struct ip_addr *gw);
+
+/* Gateway address */
+extern struct ip_addr gw;
 #endif

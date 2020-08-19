@@ -331,6 +331,8 @@ static void tcpip_bringup_finished(void *p)
   up(&tcpip_is_up);
 }
 
+struct ip_addr gw;
+
 /* 
  * Utility function to bring the whole lot up.  Call this from app_main() 
  * or similar -- it starts netfront and have lwIP start its thread,
@@ -342,7 +344,6 @@ void start_networking(void)
   struct netif *netif;
   struct ip_addr ipaddr = { htonl(IF_IPADDR) };
   struct ip_addr netmask = { htonl(IF_NETMASK) };
-  struct ip_addr gw = { 0 };
   char *ip = NULL, *netmask_str = NULL, *gw_str = NULL;
 
   tprintk("Waiting for network.\n");
