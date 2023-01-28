@@ -260,7 +260,7 @@ void netfront_select_handler(evtchn_port_t port, struct pt_regs *regs, void *dat
 }
 #endif
 
-static void free_netfront(struct netfront_dev *dev)
+static void _free_netfront(struct netfront_dev *dev)
 {
     int i;
 
@@ -291,7 +291,11 @@ static void free_netfront(struct netfront_dev *dev)
     for (i = 0; i < NET_TX_RING_SIZE; i++)
         if (dev->tx_buffers[i].page)
             free_page(dev->tx_buffers[i].page);
+}
 
+static void free_netfront(struct netfront_dev *dev)
+{
+    _free_netfront(dev);
     free(dev->nodename);
     free(dev);
 }
@@ -677,8 +681,10 @@ void suspend_netfront(void)
 {
     struct netfront_dev *dev;
 
-    for (dev = dev_list; dev != NULL; dev = dev->next)
+    for (dev = dev_list; dev != NULL; dev = dev->next) {
         _shutdown_netfront(dev);
+        _free_netfront(dev);
+    }
 }
 
 void resume_netfront(void)

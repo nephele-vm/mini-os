@@ -129,6 +129,11 @@ void fini_shutdown(void)
 }
 #endif
 
+__attribute__((weak)) void app_resume(void)
+{
+    printk("MiniOS app resume\n");
+}
+
 void kernel_suspend(void)
 {
     int rc;
@@ -144,8 +149,10 @@ void kernel_suspend(void)
     post_suspend(rc);
 
     if (rc) {
-        printk("MiniOS suspend canceled!");
+        printk("MiniOS suspend canceled!\n");
     } else {
         printk("MiniOS resumed from suspend!\n");
+
+        app_resume();
     }
 }
